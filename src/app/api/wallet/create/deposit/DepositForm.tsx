@@ -46,11 +46,11 @@ export default function DepositForm() {
   return (
     <div className="mt-6 rounded-xl border border-slate-800 bg-slate-950 p-5">
       <h3 className="font-semibold">
-        Training deposit
+        Deposit
       </h3>
 
       <p className="mt-2 text-sm text-slate-500">
-        Add simulated BTC to your training wallet.
+        Add simulated BTC to your wallet.
       </p>
 
       <form

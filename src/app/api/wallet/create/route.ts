@@ -38,7 +38,7 @@ export async function POST() {
             id: existingWallet.id,
           },
           data: {
-            address: `training_${randomUUID()}`,
+            address: `wallet_${randomUUID()}`,
           },
         });
 
@@ -57,7 +57,7 @@ export async function POST() {
     const wallet = await prisma.wallet.create({
       data: {
         userId,
-        address: `training_${randomUUID()}`,
+        address: `wallet_${randomUUID()}`,
       },
     });
 

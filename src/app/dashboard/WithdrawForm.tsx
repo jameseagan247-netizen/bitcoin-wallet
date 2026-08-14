@@ -60,11 +60,11 @@ export default function WithdrawForm() {
   return (
     <div className="mt-6 rounded-xl border border-slate-800 bg-slate-950 p-5">
       <h3 className="font-semibold text-white">
-        Training withdrawal
+        Withdrawal
       </h3>
 
       <p className="mt-2 text-sm text-slate-500">
-        Remove simulated BTC from your training wallet.
+        Remove simulated BTC from your wallet.
       </p>
 
       <form

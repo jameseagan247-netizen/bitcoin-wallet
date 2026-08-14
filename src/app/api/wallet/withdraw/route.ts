@@ -125,7 +125,7 @@ export async function POST(request: Request) {
               walletId: currentWallet.id,
               type: "WITHDRAWAL",
               amount,
-              description: "Training withdrawal",
+              description: "Withdrawal",
               status: "COMPLETED",
             },
           });
@@ -141,7 +141,7 @@ export async function POST(request: Request) {
     );
 
     return NextResponse.json({
-      message: "Training withdrawal successful.",
+      message: "Withdrawal successful.",
       balance: result.wallet.balance.toString(),
       transactionId: result.transaction.id,
     });
@@ -150,7 +150,7 @@ export async function POST(request: Request) {
       if (error.message === "INSUFFICIENT_BALANCE") {
         return NextResponse.json(
           {
-            error: "Insufficient training balance.",
+            error: "Insufficient balance.",
           },
           { status: 400 }
         );

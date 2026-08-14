@@ -70,7 +70,7 @@ export async function POST(request: Request) {
 
     if (Number(amount) > Number(MAX_DEPOSIT)) {
       return NextResponse.json(
-        { error: "Training deposits are limited to 10 BTC." },
+        { error: "Deposits are limited to 10 BTC." },
         { status: 400 }
       );
     }
@@ -102,7 +102,7 @@ export async function POST(request: Request) {
           walletId: wallet.id,
           type: "DEPOSIT",
           amount,
-          description: "Training deposit",
+          description: "Deposit",
           status: "COMPLETED",
         },
       });
@@ -114,7 +114,7 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({
-      message: "Training deposit successful.",
+      message: "Deposit successful.",
       balance: result.wallet.balance.toString(),
       transactionId: result.transaction.id,
     });
