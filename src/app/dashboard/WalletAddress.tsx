@@ -33,7 +33,7 @@ export default function WalletAddress({
           </p>
 
           <p className="mt-1 text-xs text-slate-500">
-            This address is for the simulated wallet.
+            
           </p>
         </div>
       </div>
