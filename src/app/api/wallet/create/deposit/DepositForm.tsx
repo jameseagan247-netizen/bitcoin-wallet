@@ -50,7 +50,7 @@ export default function DepositForm() {
       </h3>
 
       <p className="mt-2 text-sm text-slate-500">
-        Add simulated BTC to your wallet.
+        Add BTC to your wallet.
       </p>
 
       <form

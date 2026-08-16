@@ -11,4 +11,6 @@
 export type * from './models/User'
 export type * from './models/Wallet'
 export type * from './models/Transaction'
+export type * from './models/Withdrawal'
+export type * from './models/BankAccount'
 export type * from './commonInputTypes'

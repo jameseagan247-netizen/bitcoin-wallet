@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { verifySession } from "@/lib/auth";
-import { randomUUID } from "crypto";
+import { generateBitcoinAddress } from "@/lib/bitcoinAddress";
 
 export async function POST() {
   try {
@@ -38,7 +38,7 @@ export async function POST() {
             id: existingWallet.id,
           },
           data: {
-            address: `wallet_${randomUUID()}`,
+            address: generateBitcoinAddress(),
           },
         });
 
@@ -57,7 +57,7 @@ export async function POST() {
     const wallet = await prisma.wallet.create({
       data: {
         userId,
-        address: `wallet_${randomUUID()}`,
+        address: generateBitcoinAddress(),
       },
     });
 

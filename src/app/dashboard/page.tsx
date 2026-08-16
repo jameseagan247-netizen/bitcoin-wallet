@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { verifySession } from "@/lib/auth";
 import { getBitcoinPriceUsd } from "@/lib/bitcoinPrice";
-import DepositForm from "./DepositForm";
 import WithdrawForm from "./WithdrawForm";
 import DashboardNav from "./DashboardNav";
 import WalletAddress from "./WalletAddress";
@@ -177,12 +176,11 @@ export default async function DashboardPage() {
               address={wallet.address}
             />
 
-            <div className="mt-6">
-              <DepositForm />
-            </div>
-
             <div className="mt-4">
-              <WithdrawForm />
+              <WithdrawForm
+  balanceBtc={balanceBtc.toString()}
+  bitcoinPriceUsd={bitcoinPriceUsd}
+/>
             </div>
           </div>
         </div>

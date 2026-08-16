@@ -56,3 +56,13 @@ export type Wallet = Prisma.WalletModel
  * 
  */
 export type Transaction = Prisma.TransactionModel
+/**
+ * Model Withdrawal
+ * 
+ */
+export type Withdrawal = Prisma.WithdrawalModel
+/**
+ * Model BankAccount
+ * 
+ */
+export type BankAccount = Prisma.BankAccountModel

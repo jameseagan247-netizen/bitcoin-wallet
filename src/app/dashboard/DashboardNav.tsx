@@ -13,6 +13,14 @@ export default function DashboardNav() {
     pathname === "/dashboard/transactions" ||
     pathname.startsWith("/dashboard/transactions/");
 
+  const isBankDetails =
+    pathname === "/dashboard/bank-details" ||
+    pathname.startsWith("/dashboard/bank-details/");
+
+  const isWithdrawals =
+    pathname === "/dashboard/withdrawals" ||
+    pathname.startsWith("/dashboard/withdrawals/");
+
   const isSecurity =
     pathname === "/dashboard/security" ||
     pathname.startsWith("/dashboard/security/");
@@ -49,6 +57,28 @@ export default function DashboardNav() {
               }`}
             >
               Transactions
+            </Link>
+
+            <Link
+              href="/dashboard/bank-details"
+              className={`rounded-xl px-3 py-2 text-sm transition ${
+                isBankDetails
+                  ? "bg-orange-500/10 text-orange-400"
+                  : "text-slate-400 hover:bg-slate-900 hover:text-white"
+              }`}
+            >
+              Bank Details
+            </Link>
+
+            <Link
+              href="/dashboard/withdrawals"
+              className={`rounded-xl px-3 py-2 text-sm transition ${
+                isWithdrawals
+                  ? "bg-orange-500/10 text-orange-400"
+                  : "text-slate-400 hover:bg-slate-900 hover:text-white"
+              }`}
+            >
+              Withdrawals
             </Link>
 
             <Link
