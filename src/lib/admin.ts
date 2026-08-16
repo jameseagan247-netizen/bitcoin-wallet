@@ -1,10 +1,16 @@
-import { cookies } from "next/headers";
-import { prisma } from "@/lib/prisma";
+﻿import { prisma } from "@/lib/prisma";
 import { verifySession } from "@/lib/auth";
 
-export async function getAdminUser() {
-  const cookieStore = await cookies();
-  const sessionToken = cookieStore.get("session")?.value;
+export async function requireAdmin(request: Request) {
+  const cookieHeader = request.headers.get("cookie");
+
+  const sessionToken = cookieHeader
+    ?.split(";")
+    .map((cookie) => cookie.trim())
+    .find((cookie) => cookie.startsWith("session="))
+    ?.split("=")
+    .slice(1)
+    .join("=");
 
   if (!sessionToken) {
     return null;
@@ -22,10 +28,7 @@ export async function getAdminUser() {
     },
     select: {
       id: true,
-      firstName: true,
-      lastName: true,
       username: true,
-      email: true,
       role: true,
     },
   });
