@@ -42,3 +42,8 @@ export type Withdrawal = Prisma.WithdrawalModel
  * 
  */
 export type BankAccount = Prisma.BankAccountModel
+/**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = Prisma.AuditLogModel

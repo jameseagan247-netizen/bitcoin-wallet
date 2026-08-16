@@ -127,6 +127,20 @@ export async function POST(request: Request) {
             },
           });
 
+          await tx.auditLog.create({
+  data: {
+    actorUserId: admin.id,
+    targetUserId: client.id,
+    action: "CREDIT_BTC",
+    amount,
+    previousBalance: client.wallet.balance,
+    newBalance,
+    description:
+      description ||
+      `BTC credited by admin ${admin.username}`,
+  },
+});
+
         return {
           clientId: client.id,
           username: client.username,

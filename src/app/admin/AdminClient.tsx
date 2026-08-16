@@ -16,8 +16,26 @@ type Client = {
   } | null;
 };
 
+type AuditLog = {
+  id: string;
+  actorUserId: string;
+  actorUsername: string;
+  targetUserId: string;
+  targetUsername: string;
+  action: string;
+  amount: string | null;
+  previousBalance: string | null;
+  newBalance: string | null;
+  description: string | null;
+  createdAt: string;
+};
+
 export default function AdminClient() {
   const [clients, setClients] = useState<Client[]>([]);
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
+  const [auditLoading, setAuditLoading] = useState(true);
+  const [auditError, setAuditError] = useState("");
+
   const [selectedClientId, setSelectedClientId] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -52,8 +70,36 @@ export default function AdminClient() {
     }
   }
 
+  async function loadAuditLogs() {
+    try {
+      setAuditLoading(true);
+      setAuditError("");
+
+      const response = await fetch("/api/admin/audit-logs", {
+        cache: "no-store",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setAuditError(
+          data.error || "Unable to load audit logs."
+        );
+        return;
+      }
+
+      setAuditLogs(data.auditLogs || []);
+    } catch (error) {
+      console.error("Admin audit log loading error:", error);
+      setAuditError("Unable to connect to the server.");
+    } finally {
+      setAuditLoading(false);
+    }
+  }
+
   useEffect(() => {
     loadClients();
+    loadAuditLogs();
   }, []);
 
   async function creditBitcoin(event: React.FormEvent) {
@@ -107,6 +153,7 @@ export default function AdminClient() {
       setDescription("");
 
       await loadClients();
+      await loadAuditLogs();
     } catch (error) {
       console.error("BTC credit error:", error);
       setError("Unable to connect to the server.");
@@ -133,6 +180,7 @@ export default function AdminClient() {
     return (
       <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-6">
         <p className="text-sm text-red-400">{error}</p>
+
         <button
           type="button"
           onClick={loadClients}
@@ -200,7 +248,9 @@ export default function AdminClient() {
               </p>
 
               <p className="mt-1 text-2xl font-semibold text-white">
-                {selectedClient.wallet?.balance || "0.00000000"} BTC
+                {selectedClient.wallet?.balance ||
+                  "0.00000000"}{" "}
+                BTC
               </p>
 
               <p className="mt-2 text-sm text-slate-500">
@@ -342,6 +392,239 @@ export default function AdminClient() {
             </button>
           ))}
         </div>
+      </section>
+
+      {/* Audit Log */}
+      <section>
+        <div className="mb-4">
+          <h2 className="text-xl font-semibold">
+            Audit Log
+          </h2>
+
+          <p className="mt-1 text-sm text-slate-500">
+            Administrative wallet changes and account activity.
+          </p>
+        </div>
+
+        {auditLoading ? (
+          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+            <p className="text-sm text-slate-400">
+              Loading audit log...
+            </p>
+          </div>
+        ) : auditError ? (
+          <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-6">
+            <p className="text-sm text-red-400">
+              {auditError}
+            </p>
+
+            <button
+              type="button"
+              onClick={loadAuditLogs}
+              className="mt-4 rounded-lg border border-slate-700 px-4 py-2 text-sm text-white hover:bg-slate-800"
+            >
+              Try again
+            </button>
+          </div>
+        ) : auditLogs.length === 0 ? (
+          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+            <p className="text-sm text-slate-500">
+              No administrative actions have been recorded yet.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {auditLogs.map((log) => (
+              <div
+                key={log.id}
+                className="rounded-2xl border border-slate-800 bg-slate-900 p-5"
+              >
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="rounded-full border border-orange-500/20 bg-orange-500/10 px-2.5 py-1 text-xs font-medium text-orange-400">
+                        {log.action}
+                      </span>
+
+                      <span className="text-xs text-slate-600">
+                        {new Date(
+                          log.createdAt
+                        ).toLocaleString()}
+                      </span>
+                    </div>
+
+                    <p className="mt-3 text-sm text-slate-300">
+                      <span className="text-slate-500">
+                        Admin:
+                      </span>{" "}
+                      {log.actorUsername}
+                    </p>
+
+                    <p className="mt-1 text-sm text-slate-300">
+                      <span className="text-slate-500">
+                        Client:
+                      </span>{" "}
+                      {log.targetUsername}
+                    </p>
+
+                    {log.description && (
+                      <p className="mt-2 text-sm text-slate-400">
+                        <span className="text-slate-500">
+                          Note:
+                        </span>{" "}
+                        {log.description}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:min-w-[420px]">
+                    <div className="rounded-xl bg-slate-950 p-3">
+                      <p className="text-xs uppercase tracking-wide text-slate-600">
+                        Amount
+                      </p>
+
+                      <p className="mt-1 font-semibold text-white">
+                        {log.amount ?? "—"} BTC
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl bg-slate-950 p-3">
+                      <p className="text-xs uppercase tracking-wide text-slate-600">
+                        Before
+                      </p>
+
+                      <p className="mt-1 font-semibold text-white">
+                        {log.previousBalance ?? "—"} BTC
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl bg-slate-950 p-3">
+                      <p className="text-xs uppercase tracking-wide text-slate-600">
+                        After
+                      </p>
+
+                      <p className="mt-1 font-semibold text-orange-400">
+                        {log.newBalance ?? "—"} BTC
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+            {/* Audit Log */}
+      <section>
+        <div className="mb-4">
+          <h2 className="text-xl font-semibold">
+            Audit Log
+          </h2>
+
+          <p className="mt-1 text-sm text-slate-500">
+            Administrative wallet changes and account activity.
+          </p>
+        </div>
+
+        {auditLoading ? (
+          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+            <p className="text-sm text-slate-400">
+              Loading audit logs...
+            </p>
+          </div>
+        ) : auditError ? (
+          <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-6">
+            <p className="text-sm text-red-400">
+              {auditError}
+            </p>
+
+            <button
+              type="button"
+              onClick={loadAuditLogs}
+              className="mt-4 rounded-lg border border-slate-700 px-4 py-2 text-sm text-white hover:bg-slate-800"
+            >
+              Try again
+            </button>
+          </div>
+        ) : auditLogs.length === 0 ? (
+          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+            <p className="text-sm text-slate-400">
+              No administrative activity has been recorded yet.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {auditLogs.map((log) => (
+              <div
+                key={log.id}
+                className="rounded-2xl border border-slate-800 bg-slate-900 p-5"
+              >
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="rounded-full bg-orange-500/10 px-3 py-1 text-xs font-semibold text-orange-400">
+                        {log.action.replaceAll("_", " ")}
+                      </span>
+
+                      <span className="text-xs text-slate-600">
+                        {new Date(log.createdAt).toLocaleString()}
+                      </span>
+                    </div>
+
+                    <p className="mt-3 text-sm text-slate-300">
+                      Admin{" "}
+                      <span className="font-semibold text-white">
+                        {log.actorUsername}
+                      </span>{" "}
+                      changed client{" "}
+                      <span className="font-semibold text-white">
+                        {log.targetUsername}
+                      </span>
+                    </p>
+
+                    {log.description && (
+                      <p className="mt-2 text-sm text-slate-500">
+                        Note: {log.description}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:min-w-[420px]">
+                    <div className="rounded-xl bg-slate-950 p-3">
+                      <p className="text-xs uppercase tracking-wide text-slate-600">
+                        Amount
+                      </p>
+
+                      <p className="mt-1 font-semibold text-orange-400">
+                        {log.amount || "—"} BTC
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl bg-slate-950 p-3">
+                      <p className="text-xs uppercase tracking-wide text-slate-600">
+                        Before
+                      </p>
+
+                      <p className="mt-1 font-semibold text-white">
+                        {log.previousBalance || "—"} BTC
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl bg-slate-950 p-3">
+                      <p className="text-xs uppercase tracking-wide text-slate-600">
+                        After
+                      </p>
+
+                      <p className="mt-1 font-semibold text-green-400">
+                        {log.newBalance || "—"} BTC
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

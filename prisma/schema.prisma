@@ -86,3 +86,19 @@ model BankAccount {
 
   @@index([userId])
 }
+model AuditLog {
+  id              String   @id @default(cuid())
+  actorUserId     String
+  targetUserId    String
+  action          String
+  amount          Decimal? @db.Decimal(20, 8)
+  previousBalance Decimal? @db.Decimal(20, 8)
+  newBalance      Decimal? @db.Decimal(20, 8)
+  description     String?
+  createdAt       DateTime @default(now())
+
+  @@index([actorUserId])
+  @@index([targetUserId])
+  @@index([createdAt])
+  @@index([action])
+}

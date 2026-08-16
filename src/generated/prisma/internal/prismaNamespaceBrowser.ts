@@ -55,7 +55,8 @@ export const ModelName = {
   Wallet: 'Wallet',
   Transaction: 'Transaction',
   Withdrawal: 'Withdrawal',
-  BankAccount: 'BankAccount'
+  BankAccount: 'BankAccount',
+  AuditLog: 'AuditLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -147,6 +148,21 @@ export const BankAccountScalarFieldEnum = {
 } as const
 
 export type BankAccountScalarFieldEnum = (typeof BankAccountScalarFieldEnum)[keyof typeof BankAccountScalarFieldEnum]
+
+
+export const AuditLogScalarFieldEnum = {
+  id: 'id',
+  actorUserId: 'actorUserId',
+  targetUserId: 'targetUserId',
+  action: 'action',
+  amount: 'amount',
+  previousBalance: 'previousBalance',
+  newBalance: 'newBalance',
+  description: 'description',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
 export const SortOrder = {
