@@ -5,7 +5,7 @@ export default function Home() {
         
         <header className="flex items-center justify-between py-6">
           <div className="text-xl font-bold">
-            Lucentra Ledger & CMC
+            Lucentra Ledger
           </div>
 
           <div className="flex gap-3">
@@ -29,7 +29,7 @@ export default function Home() {
           <div className="max-w-3xl text-center">
             
             <div className="mb-6 inline-flex rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-2 text-sm text-orange-400">
-              Lucentra Ledger and CMC
+              Lucentra Ledger
             </div>
 
             <h1 className="text-5xl font-bold tracking-tight sm:text-6xl">
